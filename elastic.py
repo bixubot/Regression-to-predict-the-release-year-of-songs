@@ -2,8 +2,12 @@ import scipy.io as sio
 from sklearn import linear_model
 import math
 
+TRAIN_DIR = "data/md_train.mat"
+TEST_DIR = "data/md_test.mat"
+TEST_SIZE = 10000
+
 def main (alp, ratio):
-    train_x, train_y, test_x, test_y = (sio.loadmat('data/sm_train.mat')['trainx'], sio.loadmat('data/sm_train.mat')['trainy'], sio.loadmat('data/sm_test.mat')['testx'], sio.loadmat('data/sm_test.mat')['testy'])
+    train_x, train_y, test_x, test_y = (sio.loadmat(TRAIN_DIR)['trainx'], sio.loadmat(TRAIN_DIR)['trainy'], sio.loadmat(TEST_DIR)['testx'], sio.loadmat(TEST_DIR)['testy'])
     
     clf = linear_model.ElasticNet(alpha=alp, l1_ratio=ratio, normalize=True,warm_start=True)
     clf.fit(train_x,train_y)
@@ -12,7 +16,7 @@ def main (alp, ratio):
     diff = 0
     for (i, j) in zip(years, test_y):
         diff += abs(i-j)
-    diff /= 2000
+    diff /= TEST_SIZE   
     print ("MSE is: " + str(diff) +"with alpha: "+str(alp)+", l1_ratio: "+str(ratio))
     return diff
     
