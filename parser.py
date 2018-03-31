@@ -4,8 +4,8 @@ import random
 from scipy.io import loadmat, savemat
 
 FULL_TRAIN_SIZE = 463715
-SMALL_TRAIN_SIZE = 5000
-SMALL_TEST_SIZE = 2000
+SMALL_TRAIN_SIZE = 50000
+SMALL_TEST_SIZE = 10000
 
 infile = loadmat("../MSdata.mat")
 trainx = np.asarray(infile["trainx"])
@@ -17,5 +17,5 @@ small_trainx, small_trainy = trainx[train_idx[:SMALL_TRAIN_SIZE], :], trainy[tra
 small_testx, small_testy = trainx[train_idx[(FULL_TRAIN_SIZE - SMALL_TEST_SIZE):], :], trainy[train_idx[(FULL_TRAIN_SIZE-SMALL_TEST_SIZE):], :]
 print(small_trainx.shape)
 print(small_testx.shape)
-savemat('./data/sm_train.mat', {'trainx':small_trainx, 'trainy':small_trainy})
-savemat('./data/sm_test.mat', {'testx':small_testx, 'testy':small_testy})
+savemat('./data/md_train.mat', {'trainx':small_trainx, 'trainy':small_trainy})
+savemat('./data/md_test.mat', {'testx':small_testx, 'testy':small_testy})
