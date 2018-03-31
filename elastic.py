@@ -9,7 +9,7 @@ TEST_SIZE = 10000
 def main (alp, ratio):
     train_x, train_y, test_x, test_y = (sio.loadmat(TRAIN_DIR)['trainx'], sio.loadmat(TRAIN_DIR)['trainy'], sio.loadmat(TEST_DIR)['testx'], sio.loadmat(TEST_DIR)['testy'])
     
-    clf = linear_model.ElasticNet(alpha=alp, l1_ratio=ratio, normalize=True,warm_start=True)
+    clf = linear_model.ElasticNet(alpha=alp, l1_ratio=ratio, normalize=False,warm_start=True)
     clf.fit(train_x,train_y)
     years = clf.predict(test_x)
     
