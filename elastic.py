@@ -1,21 +1,43 @@
 import scipy.io as sio
 from sklearn import linear_model
+import math
 
-def main ():
+def main (alp, ratio):
     train_x, train_y, test_x, test_y = (sio.loadmat('data/sm_train.mat')['trainx'], sio.loadmat('data/sm_train.mat')['trainy'], sio.loadmat('data/sm_test.mat')['testx'], sio.loadmat('data/sm_test.mat')['testy'])
-
-    clf = linear_model.RidgeCV(alphas = [0.001, 0.01, 0.1, 1.0, 10.0, 100.0], normalize=True, cv=10, store_cv_values=False)
-    print ("Training......")
+    
+    clf = linear_model.ElasticNet(alpha=alp, l1_ratio=ratio, normalize=True,warm_start=True)
     clf.fit(train_x,train_y)
-    print ("Predicting.......")
     years = clf.predict(test_x)
-    print("Writing.......")
-    file = open('result_ridge.csv','w')
+    
+    diff = 0
+    for (i, j) in zip(years, test_y):
+        diff += abs(i-j)
+    diff /= 2000
+    print ("MSE is: " + str(diff) +"with alpha: "+str(alp)+", l1_ratio: "+str(ratio))
+    return diff
+    
+def predict(clf):
+    test_x = sio.loadmat('../MSdata.mat')['testx']
+
+    years = clf.predict(test_x)
+    print ("Writing.......")
+    file = open('result_elastic.csv','w')
     file.write("dataid,prediction\n")
     for i in range(len(years)):
-        file.write("{}, {} \n".format(i + 1, years[i][0]))
+        file.write("{}, {} \n".format(i + 1, years[i]))
     file.close()
 
 if __name__ == "__main__":
-	main()
+    alphas = [0.01,0.1,1]
+    ratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+    best_alpha, best_ratio = None, None
+    diff = math.inf
+    for alp in alphas:
+        for r in ratios:
+            temp = main(alp, r)
+            if temp < diff:
+                diff = temp
+                best_alpha = alp
+                best_ratio = r
+    print("optimal alpha is: "+str(best_alpha)+ " and l1_ratio is: "+str(best_ratio))
 
