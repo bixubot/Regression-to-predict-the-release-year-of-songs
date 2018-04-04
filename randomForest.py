@@ -38,6 +38,7 @@ def predict(clf):
     file.close()
 
 if __name__ == "__main__":
+    # optimal 200 50
     forests = [20,50,100,200,250]
     n_feas = [40,50,60]
     best_n, best_fea, best_clf = None, None, None
